@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Richmond Command | Centennial Debate</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        sky: {
+                            DEFAULT: '#00BFFF',
+                            glow: 'rgba(0, 191, 255, 0.5)',
+                            dark: '#007ACC',
+                            surface: 'rgba(0, 191, 255, 0.1)'
+                        },
+                        ios: {
+                            bg: '#000000',
+                            glass: 'rgba(20, 20, 25, 0.75)',
+                            border: 'rgba(255, 255, 255, 0.15)',
+                            text: '#FFFFFF',
+                            subtext: '#8E8E93',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                        'pop': 'pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-15px) scale(1.02)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pop: {
+                            '0%': { transform: 'scale(0.95)' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '100%': { transform: 'scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden; /* App-like feel */
+            padding-top: env(safe-area-inset-top);
+        }
+
+        /* Ambient Background - Sky Theme */
+        .aurora-sky {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 90vw;
+            height: 90vw;
+            background: radial-gradient(circle, rgba(0, 191, 255, 0.15), transparent 60%);
+            filter: blur(90px);
+            z-index: -1;
+            animation: float 10s ease-in-out infinite;
+        }
+        
+        .aurora-deep {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(0, 80, 255, 0.12), transparent 60%);
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 14s ease-in-out infinite reverse;
+        }
+
+        /* Hyper-Reflective Glass */
+        .ios-glass {
+            background: rgba(30, 35, 40, 0.6);
+            backdrop-filter: blur(30px) saturate(180%) brightness(1.1);
+            -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 
+                0 4px 24px -1px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .ios-glass-nav {
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Interactions */
+        .tap-scale {
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tap-scale:active {
+            transform: scale(0.96);
+        }
+
+        /* Hide Scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Smooth Text Rendering */
+        .text-smooth {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Safe Area Padding for Bottom Nav */
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden text-smooth">
+
+    <!-- Background -->
+    <div class="aurora-sky"></div>
+    <div class="aurora-deep"></div>
+
+    <!-- Top Bar -->
+    <header class="fixed top-0 w-full z-50 px-6 pt-12 pb-4 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent pointer-events-none">
+        <div class="flex items-center gap-3 pointer-events-auto">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20 border border-white/10">
+                <span class="font-bold text-white text-xs">JR</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-bold tracking-widest text-sky-400 uppercase">Coach Richmond</span>
+                <span class="text-lg font-bold text-white tracking-tight leading-none">WESTES Speech + Debate</span>
+            </div>
+        </div>
+        
+        <a href="https://www.tabroom.com" target="_blank" class="pointer-events-auto ios-glass px-4 py-2 rounded-full text-xs font-semibold text-white flex items-center gap-2 hover:bg-white/10 transition-colors">
+            Tabroom <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-sky-300"></i>
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app-container" class="flex-grow pt-28 pb-32 px-4 sm:px-6 max-w-2xl mx-auto w-full overflow-y-auto no-scrollbar">
+        <!-- Views injected here -->
+    </main>
+
+    <!-- Bottom Dock Navigation -->
+    <nav class="fixed bottom-8 left-6 right-6 z-50 ios-glass rounded-[2rem] p-1.5 flex justify-between items-center h-18 shadow-2xl shadow-black/80 safe-pb">
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="flex-1 flex flex-col items-center justify-center gap-1.5 h-full rounded-[1.5rem] text-sky-DEFAULT transition-all duration-300">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[10px] font-semibold">Overview</span>
+        </button>
+        <button onclick="switchView('attendance')" id="nav-attendance" class="flex-1 flex flex-col items-center justify-center gap-1.5 h-full rounded-[1.5rem] text-gray-400 transition-all duration-300">
+            <i class="fa-solid fa-clipboard-check text-lg"></i>
+            <span class="text-[10px] font-semibold">Check-in</span>
+        </button>
+        <button onclick="switchView('roster')" id="nav-roster" class="flex-1 flex flex-col items-center justify-center gap-1.5 h-full rounded-[1.5rem] text-gray-400 transition-all duration-300">
+            <i class="fa-solid fa-users text-lg"></i>
+            <span class="text-[10px] font-semibold">Roster</span>
+        </button>
+    </nav>
+
+    <!-- Student Detail Modal -->
+    <div id="modal-overlay" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity opacity-0 duration-300" id="modal-backdrop"></div>
+        
+        <div class="absolute inset-x-0 bottom-0 z-10 w-full max-w-2xl mx-auto transform transition-transform translate-y-full duration-300" id="modal-panel">
+            <div class="ios-glass rounded-t-[2.5rem] border-t border-white/20 shadow-[0_-10px_60px_rgba(0,191,255,0.15)] overflow-hidden flex flex-col max-h-[90vh]">
+                
+                <!-- Handle -->
+                <div class="w-full flex justify-center pt-4 pb-2" onclick="closeModal()">
+                    <div class="w-12 h-1.5 rounded-full bg-white/20"></div>
+                </div>
+
+                <!-- Header -->
+                <div class="px-8 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 id="modal-title" class="text-3xl font-bold text-white tracking-tight leading-tight">Student Name</h2>
+                            <div id="modal-tags" class="flex flex-wrap gap-2 mt-2"></div>
+                        </div>
+                        <button id="modal-attendance-btn" onclick="toggleAttendanceFromModal()" class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg">
+                            <i id="modal-attendance-icon" class="fa-solid fa-check text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 pt-2 overflow-y-auto space-y-6 pb-12 no-scrollbar safe-pb">
+                    
+                    <!-- Student Contact -->
+                    <div class="bg-white/5 rounded-3xl p-1.5 border border-white/5">
+                        <div class="px-4 py-2 text-[10px] uppercase font-bold text-sky-400/80 tracking-widest flex items-center gap-2">
+                            <i class="fa-solid fa-user-graduate"></i> Student
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <!-- Phone -->
+                            <div class="flex items-center gap-2 p-2">
+                                <div class="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-gray-300">
+                                    <i class="fa-solid fa-mobile-screen"></i>
+                                </div>
+                                <div class="flex-1 px-2">
+                                    <p class="text-xs text-gray-500">Mobile</p>
+                                    <p id="modal-phone" class="text-sm font-medium text-white">--</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a id="modal-sms-link" href="#" class="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center hover:bg-green-500/30 transition-colors"><i class="fa-solid fa-comment"></i></a>
+                                    <a id="modal-phone-link" href="#" class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center hover:bg-sky-500/30 transition-colors"><i class="fa-solid fa-phone"></i></a>
+                                </div>
+                            </div>
+                            <!-- Email -->
+                            <div class="flex items-center gap-2 p-2 border-t border-white/5">
+                                <div class="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-gray-300">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="flex-1 px-2 overflow-hidden">
+                                    <p class="text-xs text-gray-500">Email</p>
+                                    <p id="modal-email" class="text-sm font-medium text-white truncate">--</p>
+                                </div>
+                                <a id="modal-email-link" href="#" class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center hover:bg-blue-500/30 transition-colors"><i class="fa-solid fa-paper-plane"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parents -->
+                    <div class="bg-white/5 rounded-3xl p-1.5 border border-white/5">
+                         <div class="px-4 py-2 text-[10px] uppercase font-bold text-sky-400/80 tracking-widest flex items-center gap-2">
+                            <i class="fa-solid fa-house-user"></i> Guardians
+                        </div>
+                         <div id="modal-parents" class="flex flex-col gap-2 p-2">
+                             <!-- Injected via JS -->
+                         </div>
+                    </div>
+
+                    <button onclick="closeModal()" class="w-full py-4 bg-white/10 hover:bg-white/15 rounded-2xl text-white font-semibold text-sm transition-colors tap-scale border border-white/5">
+                        Dismiss
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- CONSTANTS ---
+        const STORAGE_KEY = 'RICHMOND_DEBATE_ATTENDANCE_V2026';
+
+        // --- DATA ---
+        let TEAM_DATA = [
+            { id: 1, name: "Alexia Allen", events: [{ code: "KLT", category: "Children's Literature" }, { code: "OO", category: "Original Oratory" }], status: "IN", phone: "443-253-4377", email: "alexia.q.allen@gmail.com", parents: [{ name: "Terry Allen", email: "gpwta@hotmail.com", phone: "443-980-0876" }, { name: "Dana Allen", email: "dana.allen.media@gmail.com", phone: "410-979-3044" }], present: false },
+            { id: 2, name: "Georgy Mattamana", events: [{ code: "DUO", category: "Duo Interpretation" }, { code: "OI", category: "Oral Interpretation" }], status: "IN", phone: "410-702-3762", email: "mattamanageorgy4@gmail.com", parents: [{ name: "Sini Giju Mattamana", email: "mattamana@aol.com", phone: "443-527-6769" }, { name: "Giju Kora Mattamana", email: "mattamana@aol.com", phone: "443-756-3375" }], present: false },
+            { id: 3, name: "Nathalie Tolosa", events: [{ code: "DUO", category: "Duo Interpretation" }], status: "IN", phone: "443-362-9660", email: "nathalietolosa2@gmail.com", parents: [{ name: "Benjamin Tolosa", email: "benvtolosa@yahoo.com", phone: "443-857-7537" }, { name: "Mayruth Tolosa", email: "benvtolosa@yahoo.com", phone: "443-857-7542" }], present: false },
+            { id: 4, name: "Alyssa M Carey", events: [{ code: "IMP", category: "Impromptu" }], status: "IN", phone: "443-326-3515", email: "careyalyssa11@gmail.com", parents: [{ name: "Candace Carey", email: "cdjcarey@gmail.com", phone: "410-499-9921" }], present: false },
+            { id: 5, name: "Mansi Chandrasekaran", events: [{ code: "IMP", category: "Impromptu" }, { code: "OO", category: "Original Oratory" }], status: "IN", phone: "4437607949", email: "mansc28@gmail.com", parents: [{ name: "Chandrasekaran Palaniappan", email: "", phone: "4104939669" }, { name: "Kavitha Subramaniam", email: "", phone: "4438392790" }], present: false },
+            { id: 6, name: "Mahnoor Umair", events: [{ code: "IMP", category: "Impromptu" }], status: "IN", phone: "4438258193", email: "mahnoorumair0223@gmail.com", parents: [{ name: "Uzma Bashir", email: "uzbashir786@gmail.com", phone: "4438258193" }], present: false },
+            { id: 7, name: "Nathan Degaga Kassahun", events: [{ code: "IMP", category: "Impromptu" }, { code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "4434310382", email: "nathandkassahun@gmail.com", parents: [{ name: "Kassahun Duguma", email: "kass2jesus@gmail.com", phone: "4435180368" }, { name: "Salome Mekonen", email: "salome2jesus1@gmail.com", phone: "4432215827" }], present: false },
+            { id: 8, name: "Umeymah Kazi", events: [{ code: "IMP", category: "Impromptu" }], status: "IN", phone: "443-380-9389", email: "umeymahkazi@gmail.com", parents: [{ name: "Tanzeel Kazi", email: "tanzeel.bhaiji@yahoo.com", phone: "732-662-0098" }, { name: "Sagir Kazi", email: "sageer.kazi@gmail.com", phone: "502-298-6055" }], present: false },
+            { id: 9, name: "Dhriti Prajapati", events: [{ code: "IMP", category: "Impromptu" }], status: "IN", phone: "6672730592", email: "dhrpra27@gmail.com", parents: [{ name: "Sejal Prajapati", email: "prajapatisejal17@gmail.com", phone: "5514821769" }, { name: "Samir Prajapati", email: "prajapatisamir20@gmail.com", phone: "5512689571" }], present: false },
+            { id: 10, name: "Sakeena Maniar", events: [{ code: "JVPF", category: "JV Public Forum" }], status: "IN", phone: "667-802-0681", email: "sakeena.fm67@gmail.com", parents: [{ name: "Rabia Baseer", email: "rbaseer803@gmail.com", phone: "3018734560" }, { name: "Faisel Maniar", email: "faisel.maniar@gmail.com", phone: "4109523773" }], present: false },
+            { id: 11, name: "Kairah Vasquez", events: [{ code: "JVPF", category: "JV Public Forum" }], status: "IN", phone: "410 320 8653", email: "kairahvasquez09@gmail.com", parents: [{ name: "Humberto Vásquez", email: "titosfl@yahoo.com", phone: "443 985 3169" }, { name: "Verónica Vásquez", email: "veroreategui@hotmail.com", phone: "667 369 5834" }], present: false },
+            { id: 12, name: "Biswaranjan Pani", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "443-377-6677", email: "panibiswaranjan706@gmail.com", parents: [{ name: "Radharani Pani", email: "radharanipani@gmail.com", phone: "410-419-8863" }, { name: "Manabhanjan Pani", email: "Manabhanjanpani1@gmail.com", phone: "443-990-2697" }], present: false },
+            { id: 13, name: "Adipurush Ray", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "N/A", email: "N/A", parents: [], present: false },
+            { id: 14, name: "Bakeel Al-Anesi", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "443-820-7116", email: "bakeel.alanesi@gmail.com", parents: [{ name: "Maisoon Aleryani", email: "maisoonaleryani@gmail.com", phone: "248-759-6928" }], present: false },
+            { id: 15, name: "Christopher Perez-Luna", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "443-878-2172", email: "Christopher68021@gmail.com", parents: [{ name: "Rosalio Perez-Jimenez", email: "Rosalioperez1@gmail.com", phone: "703-342-8783" }, { name: "Sonia Perez-Luna", email: "Soniaperez1.sp@gmail.com", phone: "410-294-7435" }], present: false },
+            { id: 16, name: "Rohiatu Samateh", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "4439223872", email: "rohiatusamateh1@gmail.com", parents: [{ name: "Fatoumatta Samateh", email: "", phone: "4434692493" }], present: false },
+            { id: 17, name: "Ashraf Mgar", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "443-472-0286", email: "ash.mgar0@gmail.com", parents: [{ name: "Soumia Maroine", email: "gothemelsa@gmail.com", phone: "443-303-6141" }, { name: "Ahmed Mgar", email: "ahmgar@gmail.com", phone: "410-218-9997" }], present: false },
+            { id: 18, name: "Princess Uzoma", events: [{ code: "VPF", category: "Varsity Public Forum" }], status: "IN", phone: "(443)992-9778", email: "ncmnvm73@gmail.com", parents: [{ name: "Lilian Nwagbara", email: "mmachi46@gmail.com", phone: "(443)825-8780" }], present: false }
+        ];
+
+        const CATEGORIES = [
+            "Children's Literature", "Duo Interpretation", "Impromptu", "JV Public Forum", "Oral Interpretation", "Original Oratory", "Varsity Public Forum"
+        ];
+
+        // --- APP STATE ---
+        let currentView = 'dashboard';
+        let searchQuery = '';
+        let currentlyOpenStudentId = null;
+
+        // --- INITIALIZATION ---
+        function loadAttendance() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const presentIds = JSON.parse(stored);
+                    TEAM_DATA.forEach(s => {
+                        if (presentIds.includes(s.id)) {
+                            s.present = true;
+                        } else {
+                            s.present = false;
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Failed to load attendance", e);
+            }
+        }
+
+        function saveAttendance() {
+            try {
+                const presentIds = TEAM_DATA.filter(s => s.present).map(s => s.id);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(presentIds));
+            } catch (e) {
+                console.error("Failed to save attendance", e);
+            }
+        }
+
+        function resetAllAttendance() {
+            if(confirm("Coach Richmond, are you sure you want to reset the entire roster's attendance?")) {
+                TEAM_DATA.forEach(s => s.present = false);
+                saveAttendance();
+                // Refresh current view
+                if (currentView === 'dashboard') renderDashboard(document.getElementById('app-container'));
+                if (currentView === 'attendance') renderAttendance(document.getElementById('app-container'));
+            }
+        }
+
+        // --- VIEW CONTROLLER ---
+        function switchView(viewName) {
+            currentView = viewName;
+            
+            // Nav State
+            ['dashboard', 'attendance', 'roster'].forEach(v => {
+                const el = document.getElementById(`nav-${v}`);
+                if (v === viewName) {
+                    el.classList.remove('text-gray-400');
+                    el.classList.add('text-sky-DEFAULT', 'scale-110');
+                } else {
+                    el.classList.add('text-gray-400');
+                    el.classList.remove('text-sky-DEFAULT', 'scale-110');
+                }
+            });
+
+            const container = document.getElementById('app-container');
+            container.innerHTML = ''; // Clear
+            
+            if (viewName === 'dashboard') renderDashboard(container);
+            if (viewName === 'attendance') renderAttendance(container);
+            if (viewName === 'roster') renderRoster(container);
+        }
+
+        // --- RENDERERS ---
+
+        function renderDashboard(container) {
+            const total = TEAM_DATA.length;
+            const present = TEAM_DATA.filter(s => s.present).length;
+            const missing = total - present;
+
+            container.innerHTML = `
+                <div class="space-y-6 animate-slide-up">
+                    
+                    <!-- Tournament Card -->
+                    <div class="ios-glass p-6 rounded-[2rem] relative overflow-hidden group border-white/20">
+                        <div class="absolute right-0 top-0 w-64 h-64 bg-sky-500/20 blur-[80px] rounded-full mix-blend-screen"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="inline-block px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[10px] font-bold tracking-wider uppercase text-sky-200">
+                                    <i class="fa-solid fa-calendar-day mr-1"></i> Feb 21st
+                                </span>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Mr. Richmond</span>
+                            </div>
+                            
+                            <h2 class="text-3xl font-bold text-white mb-1">Welcome, Jonathan</h2>
+                            <p class="text-sm text-gray-400 mb-6 font-medium">Western School of Technology • BCFL6 at Centennial High School</p>
+                            
+                            <div class="flex gap-3">
+                                <button onclick="switchView('attendance')" class="flex-1 bg-sky-500 hover:bg-sky-400 text-white py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-colors tap-scale shadow-lg shadow-sky-500/30">
+                                    Take Attendance
+                                </button>
+                                <a href="https://maps.google.com/?q=4300+Centennial+Lane+Ellicott+City+MD" target="_blank" class="w-14 bg-white/10 hover:bg-white/20 text-white rounded-2xl flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-location-arrow text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Stats -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div onclick="switchView('attendance')" class="ios-glass p-5 rounded-[2rem] border-white/10 text-center tap-scale cursor-pointer">
+                            <div class="text-4xl font-black text-white mb-1 text-smooth">${present}<span class="text-sm text-gray-500 font-medium">/${total}</span></div>
+                            <div class="text-[10px] uppercase font-bold text-sky-400 tracking-widest">Checked In</div>
+                        </div>
+                        <div onclick="switchView('attendance')" class="ios-glass p-5 rounded-[2rem] border-white/10 text-center tap-scale cursor-pointer ${missing > 0 ? 'bg-red-500/10 border-red-500/20' : ''}">
+                            <div class="text-4xl font-black ${missing > 0 ? 'text-red-400' : 'text-gray-600'} mb-1 text-smooth">${missing}</div>
+                            <div class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Missing</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Categories -->
+                    <div>
+                         <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-2">Team Breakdown</h3>
+                         <div class="grid grid-cols-2 gap-2">
+                            ${CATEGORIES.map(cat => {
+                                const count = TEAM_DATA.filter(s => s.events.some(e => e.category === cat)).length;
+                                const checkedIn = TEAM_DATA.filter(s => s.events.some(e => e.category === cat) && s.present).length;
+                                if (count === 0) return '';
+                                const isFull = count === checkedIn;
+                                return `
+                                    <div class="p-3 bg-white/5 border border-white/5 rounded-2xl flex justify-between items-center">
+                                        <div class="flex flex-col">
+                                            <span class="text-[10px] text-gray-400 font-bold uppercase truncate max-w-[100px]">${cat}</span>
+                                            <span class="text-xs font-bold ${isFull ? 'text-green-400' : 'text-white'}">${checkedIn}/${count} <span class="text-[9px] font-normal text-gray-500">Here</span></span>
+                                        </div>
+                                        ${isFull ? '<i class="fa-solid fa-check-circle text-green-500 text-xs"></i>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                         </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAttendance(container) {
+            const missing = TEAM_DATA.filter(s => !s.present);
+            const present = TEAM_DATA.filter(s => s.present);
+
+            container.innerHTML = `
+                <div class="space-y-6 animate-slide-up pb-10">
+                    <!-- Missing Section -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-3 px-2">
+                            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                            <h3 class="text-sm font-bold text-white uppercase tracking-widest">Missing (${missing.length})</h3>
+                        </div>
+                        
+                        ${missing.length === 0 ? 
+                            `<div class="p-6 text-center text-gray-500 text-xs italic bg-white/5 rounded-3xl border border-white/5">All students accounted for!</div>` : 
+                            `<div class="space-y-2">
+                                ${missing.map(student => `
+                                    <div class="ios-glass p-3 rounded-2xl flex items-center justify-between border-l-4 border-l-red-500 tap-scale">
+                                        <div class="flex items-center gap-3" onclick="openModal(${student.id})">
+                                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-white">
+                                                ${getInitials(student.name)}
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-white text-sm">${student.name}</p>
+                                                <p class="text-[10px] text-gray-400">${student.phone || 'No Phone'}</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="toggleAttendance(${student.id})" class="w-10 h-10 rounded-full bg-white/10 hover:bg-green-500/20 text-gray-400 hover:text-green-400 flex items-center justify-center transition-colors">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>`
+                        }
+                    </div>
+
+                    <!-- Present Section -->
+                    <div class="opacity-80">
+                         <div class="flex items-center gap-2 mb-3 px-2 mt-8">
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                            <h3 class="text-sm font-bold text-white uppercase tracking-widest">Present (${present.length})</h3>
+                        </div>
+                        <div class="space-y-2">
+                            ${present.map(student => `
+                                <div class="bg-white/5 p-3 rounded-2xl flex items-center justify-between border border-white/5 opacity-60 hover:opacity-100 transition-opacity">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center text-[10px] font-bold text-green-400 border border-green-500/30">
+                                            ${getInitials(student.name)}
+                                        </div>
+                                        <p class="font-medium text-gray-300 text-sm strike-through">${student.name}</p>
+                                    </div>
+                                    <button onclick="toggleAttendance(${student.id})" class="text-xs text-gray-500 hover:text-red-400 px-3 py-2">
+                                        Undo
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="pt-8 pb-4 flex justify-center opacity-50 hover:opacity-100 transition-opacity">
+                        <button onclick="resetAllAttendance()" class="flex items-center gap-2 text-xs font-bold text-red-400 uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors">
+                            <i class="fa-solid fa-rotate-right"></i> Reset Roster
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoster(container) {
+            const filtered = TEAM_DATA.filter(s => 
+                s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                s.events.some(e => e.code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                s.events.some(e => e.category.toLowerCase().includes(searchQuery.toLowerCase()))
+            );
+
+            container.innerHTML = `
+                <div class="space-y-4 animate-slide-up h-full flex flex-col">
+                    <div class="sticky top-0 z-20 pb-2 bg-gradient-to-b from-black via-black/90 to-transparent pt-2 -mt-2">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                            <input 
+                                type="text" 
+                                placeholder="Find student, event..." 
+                                value="${searchQuery}"
+                                oninput="updateSearch(this.value)"
+                                class="w-full bg-white/10 backdrop-blur-md border border-white/10 text-white pl-10 pr-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 placeholder-gray-500 text-sm transition-all shadow-inner"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pb-20">
+                        ${filtered.map(student => `
+                            <div onclick="openModal(${student.id})" class="flex items-center justify-between p-3 bg-white/5 rounded-2xl tap-scale cursor-pointer border border-white/5 hover:border-sky-500/30 group transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-black flex items-center justify-center text-white text-sm font-bold shadow-lg border border-white/5 group-hover:border-sky-500/50 transition-colors">
+                                        ${getInitials(student.name)}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-white text-sm">${student.name}</p>
+                                        <div class="flex gap-1 mt-1">
+                                            ${student.events.map(e => `<span class="px-1.5 py-0.5 bg-white/10 rounded text-[9px] text-gray-400 font-medium">${e.code}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                    <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-white transition-colors"></i>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${filtered.length === 0 ? '<div class="text-center py-10 text-gray-500 text-sm">No matches found.</div>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- UTILS & LOGIC ---
+
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        }
+
+        function updateSearch(val) {
+            searchQuery = val;
+            renderRoster(document.getElementById('app-container'));
+        }
+
+        function toggleAttendance(id) {
+            const student = TEAM_DATA.find(s => s.id === id);
+            if (student) {
+                student.present = !student.present;
+                saveAttendance(); // Save to localStorage
+                
+                // Re-render current view
+                if (currentView === 'attendance') renderAttendance(document.getElementById('app-container'));
+                if (currentView === 'dashboard') renderDashboard(document.getElementById('app-container'));
+            }
+        }
+
+        function toggleAttendanceFromModal() {
+            if (currentlyOpenStudentId === null) return;
+            toggleAttendance(currentlyOpenStudentId);
+            
+            // Update Modal UI
+            const student = TEAM_DATA.find(s => s.id === currentlyOpenStudentId);
+            const btn = document.getElementById('modal-attendance-btn');
+            const icon = document.getElementById('modal-attendance-icon');
+            
+            if (student.present) {
+                btn.className = "w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg bg-green-500 text-white shadow-green-500/40";
+                icon.className = "fa-solid fa-check text-xl";
+            } else {
+                btn.className = "w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg bg-white/10 text-gray-400 hover:bg-white/20";
+                icon.className = "fa-solid fa-user-xmark text-xl";
+            }
+        }
+
+        function openModal(id) {
+            const student = TEAM_DATA.find(s => s.id === id);
+            if (!student) return;
+            currentlyOpenStudentId = id;
+
+            // Info
+            document.getElementById('modal-title').textContent = student.name;
+            document.getElementById('modal-tags').innerHTML = student.events.map(ev => 
+                `<span class="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">${ev.category} (${ev.code})</span>`
+            ).join('');
+
+            // Attendance Button State
+            const btn = document.getElementById('modal-attendance-btn');
+            const icon = document.getElementById('modal-attendance-icon');
+            if (student.present) {
+                btn.className = "w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg bg-green-500 text-white shadow-green-500/40";
+                icon.className = "fa-solid fa-check text-xl";
+            } else {
+                btn.className = "w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg bg-white/10 text-gray-400 hover:bg-white/20";
+                icon.className = "fa-solid fa-user-xmark text-xl";
+            }
+
+            // Student Contact
+            document.getElementById('modal-phone').textContent = student.phone || "No Number";
+            document.getElementById('modal-phone-link').href = student.phone ? `tel:${student.phone}` : '#';
+            document.getElementById('modal-sms-link').href = student.phone ? `sms:${student.phone}` : '#';
+            
+            document.getElementById('modal-email').textContent = student.email || "No Email";
+            document.getElementById('modal-email-link').href = student.email ? `mailto:${student.email}` : '#';
+
+            // Parents
+            const pContainer = document.getElementById('modal-parents');
+            if (student.parents.length > 0) {
+                pContainer.innerHTML = student.parents.map(p => `
+                    <div class="flex flex-col bg-black/20 p-3 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold text-gray-400">${getInitials(p.name)}</div>
+                            <span class="text-sm font-bold text-white">${p.name}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            ${p.phone ? `
+                                <a href="tel:${p.phone}" class="flex-1 py-2 rounded-lg bg-white/5 hover:bg-sky-500/20 text-gray-300 hover:text-sky-300 text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+                                    <i class="fa-solid fa-phone"></i> Call
+                                </a>
+                                <a href="sms:${p.phone}" class="flex-1 py-2 rounded-lg bg-white/5 hover:bg-green-500/20 text-gray-300 hover:text-green-300 text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+                                    <i class="fa-solid fa-comment"></i> Text
+                                </a>
+                            ` : '<span class="text-xs text-gray-600 px-2">No phone listed</span>'}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                pContainer.innerHTML = '<div class="p-4 text-center text-gray-500 text-xs italic">No parent info on file.</div>';
+            }
+
+            // Animation
+            const overlay = document.getElementById('modal-overlay');
+            const backdrop = document.getElementById('modal-backdrop');
+            const panel = document.getElementById('modal-panel');
+
+            overlay.classList.remove('hidden');
+            void overlay.offsetWidth; // Force Reflow
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('translate-y-full');
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const backdrop = document.getElementById('modal-backdrop');
+            const panel = document.getElementById('modal-panel');
+
+            backdrop.classList.add('opacity-0');
+            panel.classList.add('translate-y-full');
+            currentlyOpenStudentId = null;
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        // Init
+        loadAttendance();
+        switchView('dashboard');
+        
+        // Modal Closer
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+             if(e.target.id === 'modal-backdrop') closeModal();
+        });
+
+    </script>
+</body>
+</html>
